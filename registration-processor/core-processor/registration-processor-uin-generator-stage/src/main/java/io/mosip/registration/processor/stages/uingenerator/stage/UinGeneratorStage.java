@@ -552,6 +552,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 		JSONObject  docJson = utility.getRegistrationProcessorMappingJson(MappingJsonConstants.DOCUMENT);
 		JSONObject  identityJson = utility.getRegistrationProcessorMappingJson(MappingJsonConstants.IDENTITY);
 
+		String proofOfConsentLabel = JsonUtil.getJSONValue(JsonUtil.getJSONObject(docJson, MappingJsonConstants.POC), MappingJsonConstants.VALUE);
 		String proofOfAddressLabel = JsonUtil.getJSONValue(JsonUtil.getJSONObject(docJson, MappingJsonConstants.POA), MappingJsonConstants.VALUE);
 		String proofOfDateOfBirthLabel = JsonUtil.getJSONValue(JsonUtil.getJSONObject(docJson, MappingJsonConstants.POB), MappingJsonConstants.VALUE);
 		String proofOfIdentityLabel = JsonUtil.getJSONValue(JsonUtil.getJSONObject(docJson, MappingJsonConstants.POI), MappingJsonConstants.VALUE);
@@ -559,12 +560,17 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 		String proofOfExceptionLabel = JsonUtil.getJSONValue(JsonUtil.getJSONObject(docJson, MappingJsonConstants.POE), MappingJsonConstants.VALUE);
 		String applicantBiometricLabel = JsonUtil.getJSONValue(JsonUtil.getJSONObject(identityJson, MappingJsonConstants.INDIVIDUAL_BIOMETRICS), MappingJsonConstants.VALUE);
 
+		HashMap<String, String> proofOfConsent = (HashMap<String, String>) idJSON.get(proofOfConsentLabel);
 		HashMap<String, String> proofOfAddress = (HashMap<String, String>) idJSON.get(proofOfAddressLabel);
 		HashMap<String, String> proofOfDateOfBirth = (HashMap<String, String>) idJSON.get(proofOfDateOfBirthLabel);
 		HashMap<String, String> proofOfIdentity = (HashMap<String, String>) idJSON.get(proofOfIdentityLabel);
 		HashMap<String, String> proofOfRelationship = (HashMap<String, String>) idJSON.get(proofOfRelationshipLabel);
 		HashMap<String, String> proofOfException = (HashMap<String, String>) idJSON.get(proofOfExceptionLabel);
 		HashMap<String, String> applicantBiometric = (HashMap<String, String>) idJSON.get(applicantBiometricLabel);
+		if (proofOfConsent != null) {
+			applicantDocuments
+					.add(getIdDocumnet(regId, proofOfConsentLabel, process));
+		}
 		if (proofOfAddress != null) {
 			applicantDocuments
 					.add(getIdDocumnet(regId, proofOfAddressLabel, process));
