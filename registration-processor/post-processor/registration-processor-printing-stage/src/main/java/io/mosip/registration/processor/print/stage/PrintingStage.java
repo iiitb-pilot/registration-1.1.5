@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.apache.commons.lang.RandomStringUtils;
@@ -199,6 +200,8 @@ public class PrintingStage extends MosipVerticleAPIManager {
 			else {
 			String vid = getVid(uin);
 			CredentialRequestDto credentialRequestDto = getCredentialRequestDto(vid);
+			credentialRequestDto.setAdditionalData(new LinkedHashMap<>());
+			credentialRequestDto.getAdditionalData().put("registrationId", regId);
 			requestWrapper.setId(env.getProperty("mosip.registration.processor.credential.request.service.id"));
 			requestWrapper.setRequest(credentialRequestDto);
 			DateTimeFormatter format = DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN));

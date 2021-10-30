@@ -87,3 +87,8 @@ ALTER TABLE regprc.reg_lost_uin_det ADD CONSTRAINT fk_rlostd_reg FOREIGN KEY (re
 REFERENCES regprc.registration (id) MATCH SIMPLE
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 
+-- object: fk_prttrn_reg | type: CONSTRAINT --
+-- ALTER TABLE regprc.print_transaction DROP CONSTRAINT IF EXISTS fk_prttrn_reg CASCADE;
+ALTER TABLE regprc.print_transaction ADD CONSTRAINT fk_prttrn_reg FOREIGN KEY (reg_id)
+REFERENCES regprc.registration (id) MATCH SIMPLE
+ON DELETE NO ACTION ON UPDATE NO ACTION;
