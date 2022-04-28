@@ -140,6 +140,9 @@ public class PrintingStage extends MosipVerticleAPIManager {
 	@Value("${mosip.regproc.idencode.print.rquired:false}")
 	private Boolean idencodePrintRequired;
 
+	@Value("${mosip.regproc.card.print.rquired:false}")
+	private Boolean cardPrintRequired;
+
 	/**
 	 * Deploy verticle.
 	 */
@@ -239,6 +242,24 @@ public class PrintingStage extends MosipVerticleAPIManager {
 
 				if (idencodePrintRequired) {
 					responseWrapper = insertCredentialTransactionEntry(vid, regId, env.getProperty("registration.processor.idencode.issuer.id"));
+					if (responseWrapper.getErrors() != null && !responseWrapper.getErrors().isEmpty()) {
+						ErrorDTO error = responseWrapper.getErrors().get(0);
+						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+								LoggerFileConstant.REGISTRATIONID.toString(), regId, "Idencode PrintStage::Failed:: " + error.getErrorCode() + " - " + error.getMessage());
+
+					} else {
+						credentialResponseDto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),
+								CredentialResponseDto.class);
+
+						registrationStatusDto.setRefId(credentialResponseDto.getRequestId());
+						regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+								LoggerFileConstant.REGISTRATIONID.toString(), regId, "Idencode PrintStage::process()::exit");
+					}
+				}
+
+
+				if (cardPrintRequired) {
+					responseWrapper = insertCredentialTransactionEntry(vid, regId, env.getProperty("registration.processor.cardprint.issuer.id"));
 					if (responseWrapper.getErrors() != null && !responseWrapper.getErrors().isEmpty()) {
 						ErrorDTO error = responseWrapper.getErrors().get(0);
 						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
